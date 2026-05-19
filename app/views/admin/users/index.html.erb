@@ -1,0 +1,158 @@
+<% content_for :title, "Manage Users" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <p class="text-muted mb-0">View user details, search clients, delete single accounts, or execute bulk deletions.</p>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <!-- Premium Search Filters -->
+    <div class="premium-card">
+      <div class="premium-card-body bg-light">
+        <%= search_form_for @q, url: admin_users_path, class: "row g-3 align-items-end" do |f| %>
+          <div class="col-md-5 col-sm-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-search me-1"></i> Search by Name</label>
+            <%= f.search_field :name_cont, class: "form-control premium-input w-100", placeholder: "e.g. John Doe" %>
+          </div>
+          <div class="col-md-5 col-sm-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-envelope-fill me-1"></i> Search by Email</label>
+            <%= f.search_field :email_cont, class: "form-control premium-input w-100", placeholder: "e.g. john@example.com" %>
+          </div>
+          <div class="col-md-2 col-sm-12 d-flex gap-2">
+            <%= f.submit "Filter", class: "btn btn-premium w-100 justify-content-center py-2" %>
+            <%= link_to "Clear", admin_users_path, class: "btn btn-outline-secondary w-50 py-2 d-flex align-items-center justify-content-center" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Actions Form -->
+<%= form_with url: bulk_destroy_admin_users_path, method: :delete, local: true, id: "bulk-delete-form" do |form| %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-muted fw-bold text-uppercase" style="font-size: 12px; letter-spacing: 0.05em;">Bulk Action:</span>
+      <button type="button" class="btn btn-premium-danger btn-sm py-2 px-3 fw-bold" id="bulk-delete-btn" disabled style="opacity: 0.6; cursor: not-allowed;" data-bs-toggle="modal" data-bs-target="#bulkDeleteConfirmModal">
+        Delete Selected
+      </button>
+    </div>
+    <span class="text-muted" style="font-size: 13px;" id="selected-count">0 user(s) selected</span>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="premium-card">
+        <div class="premium-card-body px-0 py-0">
+          <% if @users.any? %>
+            <div class="table-responsive">
+              <table class="table premium-table mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 50px; padding-left: 20px;">
+                      <input type="checkbox" id="select-all" class="form-check-input" style="cursor: pointer;">
+                    </th>
+                    <th>User Details</th>
+                    <th>Role</th>
+                    <th>Created At</th>
+                    <th>Bookings Count</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @users.each do |user| %>
+                    <tr>
+                      <td style="padding-left: 20px;">
+                        <%# Prevent selecting any admin user to avoid admin deletion %>
+                        <% if user.admin? %>
+                          <i class="bi bi-shield-lock-fill text-muted" title="Protected Admin Account"></i>
+                        <% else %>
+                          <input type="checkbox" name="user_ids[]" value="<%= user.id %>" class="form-check-input user-checkbox" style="cursor: pointer;">
+                        <% end %>
+                      </td>
+                      <td>
+                        <div class="fw-bold text-dark"><%= user.name %></div>
+                        <small class="text-muted"><%= user.email %></small>
+                      </td>
+                      <td>
+                        <span class="badge text-bg-<%= user.admin? ? 'danger' : 'primary' %> text-uppercase" style="font-size: 10px;">
+                          <%= user.role %>
+                        </span>
+                      </td>
+                      <td>
+                        <i class="bi bi-clock me-1 text-muted"></i>
+                        <span style="font-size: 13.5px;"><%= user.created_at.strftime("%B %d, %Y") %></span>
+                      </td>
+                      <td class="fw-bold text-dark">
+                        <span class="badge bg-light text-dark border"><%= user.bookings.count %> bookings</span>
+                      </td>
+                      <td class="text-end">
+                        <div class="d-inline-flex gap-2">
+                          <%= link_to admin_user_path(user), class: "btn btn-sm btn-outline-primary", title: "View details" do %>
+                            <i class="bi bi-eye"></i>
+                          <% end %>
+                          <% unless user.admin? %>
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-danger btn-delete-trigger" 
+                                    title="Delete"
+                                    data-url="<%= admin_user_path(user) %>" 
+                                    data-method="delete" 
+                                    data-message="Are you sure you want to delete user '<%= user.name %>'?">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                          <% end %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="bi bi-people text-muted display-2 mb-3"></i>
+              <h4 class="fw-bold text-dark">No Users Found</h4>
+              <p class="text-muted">No users matched your search criteria or exist inside the system.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Kaminari Pagination -->
+<% if @users.total_pages > 1 %>
+  <div class="pagination-container">
+    <%= paginate @users %>
+  </div>
+<% end %>
+
+
+
+<!-- Premium Bootstrap Delete Confirmation Modal -->
+<div class="modal fade" id="bulkDeleteConfirmModal" tabindex="-1" aria-labelledby="bulkDeleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0 bg-danger-subtle text-danger py-3">
+        <h5 class="modal-title fw-bold" id="bulkDeleteConfirmModalLabel">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Bulk Deletion
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4 text-center">
+        <i class="bi bi-trash3-fill text-danger display-4 mb-3 d-block"></i>
+        <h4 class="fw-bold text-dark mb-2">Are you absolutely sure?</h4>
+        <p class="text-muted mb-0 px-3">
+          You are about to delete <strong id="modal-selected-count" class="text-danger">0</strong> selected user account(s). This action is irreversible and will purge all selected user profiles.
+        </p>
+      </div>
+      <div class="modal-footer border-0 bg-light d-flex gap-2 justify-content-center py-3">
+        <button type="button" class="btn btn-outline-secondary px-4 py-2 fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+        <button type="button" id="confirm-bulk-delete-btn" class="btn btn-danger px-4 py-2 fw-bold" style="border-radius: 8px;">Delete Irreversibly</button>
+      </div>
+    </div>
+  </div>
+</div>

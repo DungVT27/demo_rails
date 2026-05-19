@@ -1,0 +1,153 @@
+<% content_for :title, "Manage Bookings" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <p class="text-muted mb-0">Monitor reservation schedules, filter appointments, cancel bookings (notifying users via email), or complete check-outs.</p>
+  </div>
+  <div>
+    <%= link_to admin_bookings_path(q: params[:q]&.to_unsafe_h, format: :csv), class: "btn btn-outline-success px-4 d-flex align-items-center gap-2 fw-semibold" do %>
+      <i class="bi bi-file-earmark-spreadsheet-fill"></i> Export CSV
+    <% end %>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <!-- Premium Search Filters -->
+    <div class="premium-card">
+      <div class="premium-card-body bg-light">
+        <%= search_form_for @q, url: admin_bookings_path, class: "row g-3 align-items-end" do |f| %>
+          <!-- Client Name search -->
+          <div class="col-md-2 col-sm-6 col-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-person me-1"></i> Client Name</label>
+            <%= f.search_field :user_name_cont, class: "form-control premium-input w-100", placeholder: "e.g. John" %>
+          </div>
+          
+          <!-- Store Select -->
+          <div class="col-md-2 col-sm-6 col-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-shop me-1"></i> Filter by Store</label>
+            <%= f.select :store_id_eq, Store.order(name: :desc).map { |s| [s.name, s.id] }, { include_blank: "All Stores" }, class: "form-select premium-input w-100" %>
+          </div>
+
+          <!-- Status Select -->
+          <div class="col-md-2 col-sm-6 col-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-flag-fill me-1"></i> Status</label>
+            <%= f.select :status_eq, Booking.statuses.keys.map { |k| [k.humanize, Booking.statuses[k]] }, { include_blank: "All Statuses" }, class: "form-select premium-input w-100" %>
+          </div>
+
+          <!-- Date From -->
+          <div class="col-md-2 col-sm-6 col-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-calendar-event me-1"></i> Date From</label>
+            <%= f.date_field :booking_date_gteq, class: "form-control premium-input w-100" %>
+          </div>
+
+          <!-- Date To -->
+          <div class="col-md-2 col-sm-6 col-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-calendar-check me-1"></i> Date To</label>
+            <%= f.date_field :booking_date_lteq, class: "form-control premium-input w-100" %>
+          </div>
+
+          <!-- Submit buttons -->
+          <div class="col-md-2 col-sm-12 col-12 d-flex gap-2">
+            <%= f.submit "Filter", class: "btn btn-premium w-100 justify-content-center py-2" %>
+            <%= link_to "Clear", admin_bookings_path, class: "btn btn-outline-secondary w-50 py-2 d-flex align-items-center justify-content-center" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bookings Table -->
+<div class="row">
+  <div class="col-12">
+    <div class="premium-card">
+      <div class="premium-card-body px-0 py-0">
+        <% if @bookings.any? %>
+          <div class="table-responsive">
+            <table class="table premium-table mb-0">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Client</th>
+                  <th>Store Details</th>
+                  <th>Date & Time</th>
+                  <th>Fee Due</th>
+                  <th>Status</th>
+                  <th class="text-end" style="width: 250px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @bookings.each do |booking| %>
+                  <tr>
+                    <td class="fw-bold text-dark">#<%= booking.id %></td>
+                    <td>
+                      <div class="fw-bold text-dark"><%= booking.user.name %></div>
+                      <small class="text-muted"><%= booking.user.email %></small>
+                    </td>
+                    <td>
+                      <div class="fw-semibold text-dark"><%= booking.store.name %></div>
+                      <small class="text-muted"><i class="bi bi-geo-alt me-1"></i><%= booking.store.address %></small>
+                    </td>
+                    <td>
+                      <div><i class="bi bi-calendar3 me-1 text-muted"></i><%= booking.booking_date.strftime("%b %d, %Y") %></div>
+                      <small class="text-muted"><i class="bi bi-clock me-1"></i><%= booking.booking_time.strftime("%I:%M %p") %></small>
+                    </td>
+                    <td class="fw-bold text-dark">$<%= number_with_precision(booking.store.booking_fee, precision: 2) %></td>
+                    <td>
+                      <span class="status-badge <%= booking.status %>"><%= booking.status %></span>
+                    </td>
+                    <td class="text-end">
+                      <div class="dropdown d-inline-block">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle px-3 py-1.5 fw-semibold" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 13px;">
+                          <i class="bi bi-gear-fill me-1"></i> Actions
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border border-light-subtle py-2">
+                          <li>
+                            <%= link_to admin_booking_path(booking), class: "dropdown-item d-flex align-items-center gap-2 py-2" do %>
+                              <i class="bi bi-eye text-primary"></i> <span>View Details</span>
+                            <% end %>
+                          </li>
+                          <% if booking.approved? %>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li>
+                              <%= button_to complete_admin_booking_path(booking), method: :patch, 
+                                            class: "dropdown-item text-success d-flex align-items-center gap-2 py-2 w-100 text-start border-0 bg-transparent", 
+                                            data: { turbo_confirm: "Mark booking ##{booking.id} as completed?" } do %>
+                                <i class="bi bi-check-circle-fill"></i> <span>Mark Completed</span>
+                              <% end %>
+                            </li>
+                            <li>
+                              <%= button_to cancel_admin_booking_path(booking), method: :patch, 
+                                            class: "dropdown-item text-danger d-flex align-items-center gap-2 py-2 w-100 text-start border-0 bg-transparent", 
+                                            data: { turbo_confirm: "Cancel booking ##{booking.id} and send email notification to #{booking.user.name}?" } do %>
+                                <i class="bi bi-x-circle-fill"></i> <span>Cancel Appointment</span>
+                              <% end %>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="bi bi-journal-x text-muted display-2 mb-3"></i>
+            <h4 class="fw-bold text-dark">No Bookings Found</h4>
+            <p class="text-muted">No scheduled bookings fit your criteria or exist in the system.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Kaminari Pagination -->
+<% if @bookings.total_pages > 1 %>
+  <div class="pagination-container">
+    <%= paginate @bookings %>
+  </div>
+<% end %>

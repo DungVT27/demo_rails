@@ -1,0 +1,20 @@
+Booking Confirmed
+
+Hello <%= @user.name %>,
+
+Thank you for your booking! We are pleased to confirm that your appointment at <%= @store.name %> has been successfully scheduled.
+
+Here are the details of your booking:
+
+- Booking ID: #<%= @booking.id %>
+- Store Name: <%= @store.name %>
+- Address: <%= @store.address %>
+- Date: <%= @booking.booking_date.strftime("%B %d, %Y") %>
+- Time: <%= @booking.booking_time.strftime("%I:%M %p") %>
+- Booking Fee: $<%= number_with_precision(@store.booking_fee, precision: 2) %>
+
+If you need to make any changes or cancel your booking, please log in to your account and visit our website.
+
+This is an automated notification. Please do not reply directly to this email.
+
+© <%= Date.current.year %> <%= ENV.fetch("APP_NAME", "Booking System") %>. All rights reserved.

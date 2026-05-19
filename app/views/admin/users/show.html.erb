@@ -1,0 +1,125 @@
+<% content_for :title, "User Details - #{@user.name}" %>
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+  <%= link_to admin_users_path, class: "btn btn-outline-secondary" do %>
+    <i class="bi bi-arrow-left me-1"></i> Back to Users
+  <% end %>
+  <% unless @user.admin? %>
+    <button type="button" 
+            class="btn btn-premium-danger btn-delete-trigger" 
+            data-url="<%= admin_user_path(@user) %>" 
+            data-method="delete" 
+            data-message="Are you sure you want to delete user '<%= @user.name %>'?">
+      <i class="bi bi-trash me-1"></i> Delete User
+    </button>
+  <% end %>
+</div>
+
+<% if @user.admin? %>
+  <div class="row justify-content-center g-4">
+    <div class="col-lg-6 col-md-8 col-12">
+      <div class="premium-card">
+        <div class="premium-card-body text-center py-5">
+          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 32px; font-weight: 700;">
+            <%= @user.name.first.upcase %>
+          </div>
+          <h3 class="fw-extrabold text-dark mb-1"><%= @user.name %></h3>
+          <p class="text-muted mb-3"><%= @user.email %></p>
+          <span class="badge text-bg-danger text-uppercase px-3 py-2 mb-4" style="font-size: 11px;"><%= @user.role %></span>
+
+          <hr class="my-4" style="border-color: #cbd5e1;">
+
+          <div class="text-start">
+            <div class="d-flex justify-content-between align-items-center" style="font-size: 14.5px;">
+              <span class="text-muted">Account Registered:</span>
+              <span class="fw-semibold text-dark"><%= @user.created_at.strftime("%B %d, %Y") %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="row g-4">
+    <!-- Left Side: Profile Summary -->
+    <div class="col-lg-4 col-md-12">
+      <div class="premium-card h-100">
+        <div class="premium-card-body text-center py-5">
+          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 32px; font-weight: 700;">
+            <%= @user.name.first.upcase %>
+          </div>
+          <h3 class="fw-extrabold text-dark mb-1"><%= @user.name %></h3>
+          <p class="text-muted mb-3"><%= @user.email %></p>
+          <span class="badge text-bg-primary text-uppercase px-3 py-2 mb-4" style="font-size: 11px;"><%= @user.role %></span>
+
+          <hr class="my-4" style="border-color: #cbd5e1;">
+
+          <div class="text-start">
+            <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 14.5px;">
+              <span class="text-muted">Account Registered:</span>
+              <span class="fw-semibold text-dark"><%= @user.created_at.strftime("%B %d, %Y") %></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center" style="font-size: 14.5px;">
+              <span class="text-muted">Bookings Count:</span>
+              <span class="badge bg-light text-dark border fw-bold"><%= @bookings.count %> bookings</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Booking List -->
+    <div class="col-lg-8 col-md-12">
+      <div class="premium-card h-100">
+        <div class="premium-card-header bg-transparent border-bottom-0 pb-0">
+          <h5 class="fw-bold text-dark mb-0">User Booking History</h5>
+        </div>
+        <div class="premium-card-body px-0 py-0">
+          <% if @bookings.any? %>
+            <div class="table-responsive">
+              <table class="table premium-table mb-0">
+                <thead>
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Store</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @bookings.each do |booking| %>
+                    <tr>
+                      <td class="fw-bold text-dark">#<%= booking.id %></td>
+                      <td>
+                        <div class="fw-semibold text-dark"><%= booking.store.name %></div>
+                        <small class="text-muted"><%= booking.store.address %></small>
+                      </td>
+                      <td>
+                        <i class="bi bi-calendar3 me-1 text-muted"></i>
+                        <span style="font-size: 13.5px;"><%= booking.booking_date.strftime("%b %d, %Y") %></span>
+                      </td>
+                      <td>
+                        <i class="bi bi-clock me-1 text-muted"></i>
+                        <span style="font-size: 13.5px;"><%= booking.booking_time.strftime("%I:%M %p") %></span>
+                      </td>
+                      <td>
+                        <span class="status-badge <%= booking.status %>" style="font-size: 10px; padding: 4px 8px;"><%= booking.status %></span>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="bi bi-calendar-x text-muted display-3 mb-3"></i>
+              <h5 class="fw-bold text-dark">No Bookings Recorded</h5>
+              <p class="text-muted mb-0">This client has not scheduled any appointments yet.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

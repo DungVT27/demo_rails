@@ -1,0 +1,36 @@
+en:
+  app_messages:
+    unauthorized: "You are not authorized to access this page."
+    access_denied: "Access Denied: You do not have permissions to access the Administration area."
+    admin:
+      users:
+        delete_admin_error: "You cannot delete an admin account."
+        delete_booking_error: "Cannot delete user because they have active or past bookings."
+        no_selection_error: "No users were selected for deletion."
+        bulk_delete_success: "Successfully deleted all %{count} selected user(s)."
+        single_delete_success: "User was successfully deleted."
+      bookings:
+        cancel_error: "Failed to cancel booking: %{errors}"
+        cancel_success: "Booking #%{id} has been cancelled. An email notification has been sent to %{user_name}."
+        complete_error: "Failed to complete booking: %{errors}"
+        complete_success: "Booking #%{id} has been completed successfully."
+      stores:
+        create_success: "Store '%{name}' was successfully created!"
+        update_success: "Store '%{name}' was successfully updated!"
+        delete_error: "Cannot delete store because it has active or past booking records."
+        delete_success: "Store was successfully deleted."
+    public:
+      bookings:
+        create_success: "Booking created successfully! Your booking ID is #%{id}."
+        create_error: "Failed to create booking: %{errors}"
+        cancel_success: "Booking has been cancelled successfully."
+        cancel_error: "Failed to cancel booking: %{errors}"
+    models:
+      booking:
+        date_in_past: "cannot be in the past"
+        time_in_past: "cannot be in the past"
+        operating_hours: "must be within the store's operating hours (%{open} ~ %{close})"
+        duplicate_slot: "has already been booked at this store for this time slot"
+        inactive_store: "cannot booking for this store, please try again later"
+      store:
+        update_with_approved_bookings: "Store cannot be updated because there are active approved bookings."

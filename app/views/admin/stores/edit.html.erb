@@ -1,0 +1,14 @@
+<% content_for :title, "Edit Store - #{@store.name}" %>
+
+<div class="row">
+  <div class="col-lg-10 col-md-12 mx-auto">
+    <div class="premium-card">
+      <div class="premium-card-header">
+        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-pencil-square me-2 text-primary"></i>Update Store Details</h5>
+      </div>
+      <div class="premium-card-body">
+        <%= render "form", store: @store %>
+      </div>
+    </div>
+  </div>
+</div>

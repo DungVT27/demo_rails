@@ -1,0 +1,183 @@
+<% content_for :title, "Admin Control Dashboard" %>
+
+<!-- Metric Statistics Cards -->
+<div class="row g-4 mb-4">
+  <!-- Total Stores -->
+  <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="stat-card">
+      <div>
+        <span class="text-muted fw-bold d-block text-uppercase mb-1" style="font-size: 11px; letter-spacing: 0.05em;">Total Stores</span>
+        <h2 class="fw-extrabold text-dark mb-0"><%= @total_stores %></h2>
+      </div>
+      <div class="stat-icon primary">
+        <i class="bi bi-shop"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Users -->
+  <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="stat-card">
+      <div>
+        <span class="text-muted fw-bold d-block text-uppercase mb-1" style="font-size: 11px; letter-spacing: 0.05em;">Total Clients</span>
+        <h2 class="fw-extrabold text-dark mb-0"><%= @total_users %></h2>
+      </div>
+      <div class="stat-icon warning">
+        <i class="bi bi-people"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Bookings -->
+  <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="stat-card">
+      <div>
+        <span class="text-muted fw-bold d-block text-uppercase mb-1" style="font-size: 11px; letter-spacing: 0.05em;">Total Bookings</span>
+        <h2 class="fw-extrabold text-dark mb-0"><%= @total_bookings %></h2>
+      </div>
+      <div class="stat-icon danger">
+        <i class="bi bi-calendar-check"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estimated Revenue -->
+  <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="stat-card border-success bg-success-subtle" style="--bs-bg-opacity: 0.25;">
+      <div>
+        <span class="text-success fw-bold d-block text-uppercase mb-1" style="font-size: 11px; letter-spacing: 0.05em;">Total Revenue</span>
+        <h2 class="fw-extrabold text-success mb-0">$<%= number_with_precision(@total_revenue, precision: 2) %></h2>
+      </div>
+      <div class="stat-icon success">
+        <i class="bi bi-cash-stack"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Status Breakdown Visualizer -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="premium-card">
+      <div class="premium-card-header bg-transparent border-bottom-0 pb-0">
+        <h5 class="fw-bold text-dark mb-0">Booking Status Allocations</h5>
+      </div>
+      <div class="premium-card-body">
+        <div class="row text-center g-3 mb-3">
+          <div class="col-md-4">
+            <span class="text-muted d-block" style="font-size: 13px;">Approved Appointments</span>
+            <h3 class="fw-bold text-success mb-0"><%= @approved_bookings %></h3>
+          </div>
+          <div class="col-md-4 border-start border-end">
+            <span class="text-muted d-block" style="font-size: 13px;">Cancelled Appointments</span>
+            <h3 class="fw-bold text-danger mb-0"><%= @cancelled_bookings %></h3>
+          </div>
+          <div class="col-md-4">
+            <span class="text-muted d-block" style="font-size: 13px;">Completed Appointments</span>
+            <h3 class="fw-bold text-primary mb-0"><%= @completed_bookings %></h3>
+          </div>
+        </div>
+        <!-- Progress Bar Visual Distribution -->
+        <% total_percent = @total_bookings > 0 ? @total_bookings.to_f : 1.0 %>
+        <div class="progress rounded-pill shadow-sm" style="height: 14px;">
+          <div class="progress-bar bg-success" style="width: <%= (@approved_bookings / total_percent * 100).round(1) %>%" title="Approved"></div>
+          <div class="progress-bar bg-danger" style="width: <%= (@cancelled_bookings / total_percent * 100).round(1) %>%" title="Cancelled"></div>
+          <div class="progress-bar bg-primary" style="width: <%= (@completed_bookings / total_percent * 100).round(1) %>%" title="Completed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lower Sections: Recent Activities vs Popular Stores -->
+<div class="row g-4">
+  <!-- Recent Bookings Table -->
+  <div class="col-lg-7 col-md-12">
+    <div class="premium-card h-100">
+      <div class="premium-card-header">
+        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history text-primary me-2"></i>Recent Booking Activities</h5>
+        <%= link_to "View All", admin_bookings_path, class: "btn btn-outline-primary btn-sm py-1.5 px-3" %>
+      </div>
+      
+      <div class="premium-card-body px-0 py-0">
+        <% if @recent_bookings.any? %>
+          <div class="table-responsive">
+            <table class="table premium-table mb-0">
+              <thead>
+                <tr>
+                  <th style="padding: 12px 20px;">Client</th>
+                  <th style="padding: 12px 20px;">Store</th>
+                  <th style="padding: 12px 20px;">Date/Time</th>
+                  <th style="padding: 12px 20px;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @recent_bookings.each do |booking| %>
+                  <tr>
+                    <td>
+                      <div class="fw-semibold text-dark"><%= booking.user.name %></div>
+                      <small class="text-muted"><%= booking.user.email %></small>
+                    </td>
+                    <td class="fw-medium text-dark"><%= booking.store.name %></td>
+                    <td>
+                      <div style="font-size: 13.5px;"><%= booking.booking_date.strftime("%b %d, %Y") %></div>
+                      <small class="text-muted" style="font-size: 11px;"><%= booking.booking_time.strftime("%I:%M %p") %></small>
+                    </td>
+                    <td>
+                      <span class="status-badge <%= booking.status %>" style="font-size: 10px; padding: 4px 8px;"><%= booking.status %></span>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center p-5">
+            <i class="bi bi-journal-x text-muted display-4"></i>
+            <p class="text-muted mt-2">No bookings recorded yet.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Stores Count List -->
+  <div class="col-lg-5 col-md-12">
+    <div class="premium-card h-100">
+      <div class="premium-card-header">
+        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-fire text-danger me-2"></i>Popular Stores</h5>
+        <%= link_to "Manage", admin_stores_path, class: "btn btn-outline-secondary btn-sm py-1.5 px-3" %>
+      </div>
+
+      <div class="premium-card-body">
+        <% if @popular_stores.any? %>
+          <div class="d-flex flex-column gap-3">
+            <% @popular_stores.each_with_index do |store, index| %>
+              <div class="d-flex align-items-center justify-content-between p-3 rounded-3 border bg-light">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="bg-primary text-white rounded-circle fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 14px;">
+                    <%= index + 1 %>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0"><%= store.name %></h6>
+                    <small class="text-muted" style="font-size: 12px;"><i class="bi bi-geo-alt me-1"></i><%= store.address %></small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-danger rounded-pill fw-bold" style="font-size: 12px; padding: 6px 12px;">
+                    <%= store.bookings_count %> Bookings
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center p-5">
+            <i class="bi bi-shop-window text-muted display-4"></i>
+            <p class="text-muted mt-2">No active store data currently linked to bookings.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

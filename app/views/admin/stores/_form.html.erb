@@ -1,0 +1,68 @@
+<%= form_with(model: [:admin, store], local: true, class: "row g-4") do |f| %>
+  <% if store.errors.any? %>
+    <div class="col-12">
+      <div class="alert alert-danger border-danger-subtle rounded-3 p-3">
+        <h5 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Please correct the <%= pluralize(store.errors.count, "error") %>:</h5>
+        <ul class="mb-0" style="font-size: 14px;">
+          <% store.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Store Name -->
+  <div class="col-md-6 col-sm-12">
+    <%= f.label :name, "Store Name", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%= f.text_field :name, class: "form-control premium-input w-100", required: true, placeholder: "e.g. Downtown Oasis Store" %>
+  </div>
+
+  <!-- Booking Fee -->
+  <div class="col-md-6 col-sm-12">
+    <%= f.label :booking_fee, "Booking Fee ($)", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%= f.number_field :booking_fee, step: :any, min: 0, class: "form-control premium-input w-100", required: true, placeholder: "e.g. 15.00" %>
+  </div>
+
+  <!-- Store Description -->
+  <div class="col-12">
+    <%= f.label :description, "Store Description", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%= f.text_area :description, rows: 4, class: "form-control premium-input w-100", placeholder: "Provide details about services, tires, exchange operations, rotation facilities, etc." %>
+  </div>
+
+  <!-- Store Address -->
+  <div class="col-md-8 col-sm-12">
+    <%= f.label :address, "Store Address", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%= f.text_field :address, class: "form-control premium-input w-100", required: true, placeholder: "e.g. 456 Broadway, New York, NY" %>
+  </div>
+
+  <!-- Store Status -->
+  <div class="col-md-4 col-sm-12">
+    <%= f.label :status, "Store Status", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%= f.select :status, Store.statuses.keys.map { |k| [k.humanize, k] }, {}, class: "form-select premium-input w-100", required: true %>
+  </div>
+
+  <!-- Opening Time -->
+  <div class="col-md-6 col-sm-12">
+    <%= f.label :opening_time, "Opening Time", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%# Extract time formatted as HH:MM if object exists %>
+    <% open_val = store.opening_time.present? ? store.opening_time.strftime("%H:%M") : "" %>
+    <%= f.time_field :opening_time, value: open_val, class: "form-control premium-input w-100", required: true %>
+    <small class="text-muted" style="font-size: 12px;"><i class="bi bi-info-circle me-1"></i>Cannot be earlier than <strong>08:00 AM</strong>.</small>
+  </div>
+
+  <!-- Closing Time -->
+  <div class="col-md-6 col-sm-12">
+    <%= f.label :closing_time, "Closing Time", class: "form-label fw-bold text-dark", style: "font-size: 13.5px;" %>
+    <%# Extract time formatted as HH:MM if object exists %>
+    <% close_val = store.closing_time.present? ? store.closing_time.strftime("%H:%M") : "" %>
+    <%= f.time_field :closing_time, value: close_val, class: "form-control premium-input w-100", required: true %>
+    <small class="text-muted" style="font-size: 12px;"><i class="bi bi-info-circle me-1"></i>Cannot be later than <strong>05:00 PM (17:00)</strong>.</small>
+  </div>
+
+  <!-- Submit Buttons -->
+  <div class="col-12 mt-4 d-flex gap-2">
+    <%= f.submit store.new_record? ? "Create Store" : "Save Changes", class: "btn btn-premium px-5" %>
+    <%= link_to "Cancel", admin_stores_path, class: "btn btn-outline-secondary px-4 d-flex align-items-center justify-content-center" %>
+  </div>
+<% end %>

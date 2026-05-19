@@ -1,0 +1,105 @@
+<% content_for :title, "Booking Details - ##{@booking.id}" %>
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+  <%= link_to admin_bookings_path, class: "btn btn-outline-secondary" do %>
+    <i class="bi bi-arrow-left me-1"></i> Back to Bookings
+  <% end %>
+  
+  <% if @booking.approved? %>
+    <div class="d-flex gap-2">
+      <!-- Complete Button -->
+      <%= button_to complete_admin_booking_path(@booking), method: :patch, 
+                    class: "btn btn-success text-white px-4 py-2.5 fw-bold d-flex align-items-center gap-1.5", 
+                    data: { turbo_confirm: "Mark booking ##{@booking.id} as completed?" } do %>
+        <i class="bi bi-check-circle-fill"></i> Complete Booking
+      <% end %>
+
+      <!-- Cancel Button -->
+      <%= button_to cancel_admin_booking_path(@booking), method: :patch, 
+                    class: "btn btn-premium-danger px-4 py-2.5 fw-bold d-flex align-items-center gap-1.5", 
+                    data: { turbo_confirm: "Cancel booking ##{@booking.id} and send email notification to #{@booking.user.name}?" } do %>
+        <i class="bi bi-x-circle-fill"></i> Cancel Booking
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="row g-4">
+  <!-- Left Side: Booking Specifications -->
+  <div class="col-lg-7 col-md-12">
+    <div class="premium-card h-100">
+      <div class="premium-card-header bg-transparent border-bottom-0 pb-0">
+        <h5 class="fw-bold text-dark mb-0">Booking Details</h5>
+      </div>
+      <div class="premium-card-body">
+        <table class="table table-borderless">
+          <tr>
+            <td class="text-muted fw-semibold py-2" style="width: 35%;">Booking ID:</td>
+            <td class="text-dark fw-bold py-2">#<%= @booking.id %></td>
+          </tr>
+          <tr>
+            <td class="text-muted fw-semibold py-2">Date:</td>
+            <td class="text-dark fw-medium py-2"><%= @booking.booking_date.strftime("%B %d, %Y") %></td>
+          </tr>
+          <tr>
+            <td class="text-muted fw-semibold py-2">Time:</td>
+            <td class="text-dark fw-medium py-2"><%= @booking.booking_time.strftime("%I:%M %p") %></td>
+          </tr>
+          <tr>
+            <td class="text-muted fw-semibold py-2">Status:</td>
+            <td class="py-2"><span class="status-badge <%= @booking.status %>"><%= @booking.status.upcase %></span></td>
+          </tr>
+          <tr>
+            <td class="text-muted fw-semibold py-2">Booking Fee:</td>
+            <td class="text-dark fw-bold py-2">$<%= number_with_precision(@booking.store.booking_fee, precision: 2) %></td>
+          </tr>
+          <tr>
+            <td class="text-muted fw-semibold py-2">Created At:</td>
+            <td class="text-muted py-2"><%= @booking.created_at.strftime("%B %d, %Y %I:%M %p") %></td>
+          </tr>
+          <tr>
+            <td class="text-muted fw-semibold py-2">Last Updated:</td>
+            <td class="text-muted py-2"><%= @booking.updated_at.strftime("%B %d, %Y %I:%M %p") %></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Related Client & Store Details -->
+  <div class="col-lg-5 col-md-12">
+    <div class="row g-4">
+      <!-- User Summary Card -->
+      <div class="col-12">
+        <div class="premium-card">
+          <div class="premium-card-header bg-transparent border-bottom-0 pb-0">
+            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-person text-primary me-2"></i>Client Information</h6>
+          </div>
+          <div class="premium-card-body">
+            <h5 class="fw-extrabold text-dark mb-1"><%= @booking.user.name %></h5>
+            <p class="text-muted mb-2" style="font-size: 14px;"><%= @booking.user.email %></p>
+            <%= link_to admin_user_path(@booking.user), class: "btn btn-outline-primary btn-sm py-1.5 px-3" do %>
+              <i class="bi bi-eye"></i> View Profile
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Store Summary Card -->
+      <div class="col-12">
+        <div class="premium-card">
+          <div class="premium-card-header bg-transparent border-bottom-0 pb-0">
+            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-shop text-primary me-2"></i>Store Information</h6>
+          </div>
+          <div class="premium-card-body">
+            <h5 class="fw-extrabold text-dark mb-1"><%= @booking.store.name %></h5>
+            <p class="text-muted mb-2" style="font-size: 14px;"><i class="bi bi-geo-alt me-1"></i><%= @booking.store.address %></p>
+            <%= link_to admin_store_path(@booking.store), class: "btn btn-outline-primary btn-sm py-1.5 px-3" do %>
+              <i class="bi bi-eye"></i> View Store Info
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

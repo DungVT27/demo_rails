@@ -1,0 +1,110 @@
+<% content_for :title, "Manage Stores" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <p class="text-muted mb-0">Create, edit, configure operating hours, and delete stores.</p>
+  </div>
+  <%= link_to new_admin_store_path, class: "btn btn-premium px-4" do %>
+    <i class="bi bi-plus-lg me-1"></i> Add Store
+  <% end %>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <!-- Premium Search Filters -->
+    <div class="premium-card">
+      <div class="premium-card-body bg-light">
+        <%= search_form_for @q, url: admin_stores_path, class: "row g-3 align-items-end" do |f| %>
+          <div class="col-md-5 col-sm-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-search me-1"></i> Search by Name</label>
+            <%= f.search_field :name_cont, class: "form-control premium-input w-100", placeholder: "e.g. Downtown Store" %>
+          </div>
+          <div class="col-md-5 col-sm-12">
+            <label class="form-label fw-semibold text-dark" style="font-size: 13px;"><i class="bi bi-geo-alt-fill me-1"></i> Search by Address</label>
+            <%= f.search_field :address_cont, class: "form-control premium-input w-100", placeholder: "e.g. Broadway" %>
+          </div>
+          <div class="col-md-2 col-sm-12 d-flex gap-2">
+            <%= f.submit "Filter", class: "btn btn-premium w-100 justify-content-center py-2" %>
+            <%= link_to "Clear", admin_stores_path, class: "btn btn-outline-secondary w-50 py-2 d-flex align-items-center justify-content-center" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stores Table -->
+<div class="row">
+  <div class="col-12">
+    <div class="premium-card">
+      <div class="premium-card-body px-0 py-0">
+        <% if @stores.any? %>
+          <div class="table-responsive">
+            <table class="table premium-table mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Store</th>
+                  <th>Operating Hours</th>
+                  <th>Booking Fee</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @stores.each do |store| %>
+                  <tr>
+                    <td class="fw-bold text-dark">#<%= store.id %></td>
+                    <td>
+                      <div class="fw-bold text-dark"><%= store.name %></div>
+                      <small class="text-muted"><i class="bi bi-geo-alt me-1"></i><%= store.address %></small>
+                    </td>
+                    <td>
+                      <i class="bi bi-clock me-1 text-primary"></i>
+                      <span class="fw-medium text-dark"><%= store.opening_time.strftime("%I:%M %p") %> - <%= store.closing_time.strftime("%I:%M %p") %></span>
+                    </td>
+                    <td class="fw-bold text-dark">$<%= number_with_precision(store.booking_fee, precision: 2) %></td>
+                    <td>
+                      <span class="status-badge <%= store.status %>"><%= store.status %></span>
+                    </td>
+                    <td class="text-end">
+                      <div class="d-inline-flex gap-2">
+                        <%= link_to admin_store_path(store), class: "btn btn-sm btn-outline-primary", title: "View details" do %>
+                          <i class="bi bi-eye"></i>
+                        <% end %>
+                        <%= link_to edit_admin_store_path(store), class: "btn btn-sm btn-outline-warning", title: "Edit" do %>
+                          <i class="bi bi-pencil"></i>
+                        <% end %>
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-danger btn-delete-trigger" 
+                                title="Delete"
+                                data-url="<%= admin_store_path(store) %>" 
+                                data-method="delete" 
+                                data-message="Are you sure you want to delete store '<%= store.name %>'?">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="bi bi-shop-window text-muted display-2 mb-3"></i>
+            <h4 class="fw-bold text-dark">No Stores Found</h4>
+            <p class="text-muted">No stores matching your filters were found or currently exist in the system.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Kaminari Pagination -->
+<% if @stores.total_pages > 1 %>
+  <div class="pagination-container">
+    <%= paginate @stores %>
+  </div>
+<% end %>

@@ -1,0 +1,84 @@
+<% content_for :title, "My Bookings" %>
+
+<div class="row">
+  <div class="col-12">
+    <!-- Premium Card -->
+    <div class="premium-card">
+      <div class="premium-card-header bg-transparent border-bottom-0 pb-0">
+        <h4 class="fw-bold text-dark mb-0"><i class="bi bi-calendar-event text-primary me-2"></i>Reservation History</h4>
+      </div>
+
+      <div class="premium-card-body px-0">
+        <% if @bookings.any? %>
+          <div class="table-responsive">
+            <table class="premium-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Store</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Booking Fee</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @bookings.each do |booking| %>
+                  <tr>
+                    <td class="fw-bold text-dark">#<%= booking.id %></td>
+                    <td>
+                      <div class="fw-semibold text-dark"><%= booking.store.name %></div>
+                      <small class="text-muted"><i class="bi bi-geo-alt me-1"></i><%= booking.store.address %></small>
+                    </td>
+                    <td>
+                      <i class="bi bi-calendar3 text-muted me-1"></i>
+                      <span><%= booking.booking_date.strftime("%B %d, %Y") %></span>
+                    </td>
+                    <td>
+                      <i class="bi bi-clock text-muted me-1"></i>
+                      <span><%= booking.booking_time.strftime("%I:%M %p") %></span>
+                    </td>
+                    <td class="fw-semibold text-dark">$<%= number_with_precision(booking.store.booking_fee, precision: 2) %></td>
+                    <td>
+                      <span class="status-badge <%= booking.status %>"><%= booking.status %></span>
+                    </td>
+                    <td class="text-end">
+                      <% if booking.approved? %>
+                        <%= button_to cancel_booking_path(booking), method: :patch, 
+                                      class: "btn btn-outline-danger btn-sm py-1.5 px-3 fw-semibold", 
+                                      data: { turbo_confirm: "Are you sure you want to cancel this booking?" } do %>
+                          <i class="bi bi-x-circle me-1"></i> Cancel
+                        <% end %>
+                      <% else %>
+                        <span class="text-muted" style="font-size: 13px;">None</span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="bi bi-calendar-x text-muted display-1 mb-3"></i>
+            <h3 class="fw-bold text-dark">No Bookings Scheduled</h3>
+            <p class="text-muted">You haven't made any store bookings yet. Browse our active stores to schedule one today!</p>
+            <div class="mt-4">
+              <%= link_to stores_path, class: "btn btn-premium" do %>
+                <i class="bi bi-shop me-2"></i> Browse Stores
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Kaminari Pagination -->
+<% if @bookings.total_pages > 1 %>
+  <div class="pagination-container">
+    <%= paginate @bookings %>
+  </div>
+<% end %>

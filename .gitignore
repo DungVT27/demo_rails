@@ -1,0 +1,55 @@
+# Custom User Config
+.env
+.vscode
+/node_modules
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore tmp files, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+/tmp/cache/bootsnap/*
+!/tmp/cache/
+!/tmp/cache/.keep
+/tmp/sockets/*
+!/tmp/sockets/
+!/tmp/sockets/.keep
+
+# Ignore database files.
+/db/*.sqlite3
+/db/*.sqlite3-*
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+# Ignore command history.
+.byebug_history
+.pry_history
+.irb_history
+
+# Ignore compiled assets.
+/public/assets
+/public/packs
+/public/packs-test
+
+# Ignore yarn logs
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# MacOS / Windows / Linux System Files
+.DS_Store
+Thumbs.db
+*~
+*.swp

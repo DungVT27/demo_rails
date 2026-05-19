@@ -1,0 +1,24 @@
+Booking Cancelled
+
+Hello <%= @user.name %>,
+
+<% if @cancelled_by_admin -%>
+We regret to inform you that your booking at <%= @store.name %> has been cancelled by our administration.
+<% else -%>
+We are confirming that your booking at <%= @store.name %> has been successfully cancelled.
+<% end -%>
+
+Here are the details of the cancelled booking:
+
+- Booking ID: #<%= @booking.id %>
+- Store Name: <%= @store.name %>
+- Address: <%= @store.address %>
+- Date: <%= @booking.booking_date.strftime("%B %d, %Y") %>
+- Time: <%= @booking.booking_time.strftime("%I:%M %p") %>
+- Booking Fee: $<%= number_with_precision(@store.booking_fee, precision: 2) %>
+
+If you have any questions or would like to schedule another booking, please visit our website.
+
+This is an automated notification. Please do not reply directly to this email.
+
+© <%= Date.current.year %> <%= ENV.fetch("APP_NAME", "Booking System") %>. All rights reserved.

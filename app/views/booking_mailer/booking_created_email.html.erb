@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #f8fafc;
+        margin: 0;
+        padding: 40px 20px;
+        color: #334155;
+      }
+      .card {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        padding: 32px 24px;
+        text-align: center;
+        color: #ffffff;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .content {
+        padding: 32px 24px;
+      }
+      .greeting {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: #0f172a;
+      }
+      .message {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #475569;
+        margin-bottom: 24px;
+      }
+      .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 24px;
+        background-color: #f8fafc;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .details-table td {
+        padding: 14px 18px;
+        font-size: 14px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .details-table tr:last-child td {
+        border-bottom: none;
+      }
+      .label {
+        font-weight: 600;
+        color: #64748b;
+        width: 35%;
+      }
+      .value {
+        color: #0f172a;
+        font-weight: 500;
+      }
+      .footer {
+        background-color: #f1f5f9;
+        padding: 24px;
+        text-align: center;
+        font-size: 13px;
+        color: #94a3b8;
+        border-top: 1px solid #e2e8f0;
+      }
+      .footer a {
+        color: #10b981;
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="header">
+        <h1>Booking Confirmed</h1>
+      </div>
+      <div class="content">
+        <p class="greeting">Hello <%= @user.name %>,</p>
+        <p class="message">
+          Thank you for your booking! We are pleased to confirm that your appointment at <strong><%= @store.name %></strong> has been successfully scheduled. Below are the details of your booking:
+        </p>
+        
+        <table class="details-table">
+          <tr>
+            <td class="label">Booking ID</td>
+            <td class="value">#<%= @booking.id %></td>
+          </tr>
+          <tr>
+            <td class="label">Store</td>
+            <td class="value"><%= @store.name %></td>
+          </tr>
+          <tr>
+            <td class="label">Address</td>
+            <td class="value"><%= @store.address %></td>
+          </tr>
+          <tr>
+            <td class="label">Date</td>
+            <td class="value"><%= @booking.booking_date.strftime("%B %d, %Y") %></td>
+          </tr>
+          <tr>
+            <td class="label">Time</td>
+            <td class="value"><%= @booking.booking_time.strftime("%I:%M %p") %></td>
+          </tr>
+          <tr>
+            <td class="label">Booking Fee</td>
+            <td class="value">$<%= number_with_precision(@store.booking_fee, precision: 2) %></td>
+          </tr>
+        </table>
+        
+        <p class="message" style="margin-bottom: 0;">
+          If you need to make any changes or cancel your booking, please log in to your account and go to your bookings page at least 24 hours prior to the schedule.
+        </p>
+      </div>
+      <div class="footer">
+        <p>This is an automated notification. Please do not reply directly to this email.</p>
+        <p>&copy; <%= Date.current.year %> <%= ENV.fetch("APP_NAME", "Booking System") %>. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
