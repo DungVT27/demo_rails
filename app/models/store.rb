@@ -52,7 +52,7 @@ class Store < ApplicationRecord
 
   def cannot_update_with_approved_bookings
     if bookings.approved.exists?
-      errors.add(:base, I18n.t("app_messages.models.store.update_with_approved_bookings"))
+      errors.add(:base, I18n.t("messages.models.store.update_with_approved_bookings"))
     end
   end
 end

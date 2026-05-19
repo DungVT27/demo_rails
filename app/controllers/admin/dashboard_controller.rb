@@ -13,13 +13,13 @@ class Admin::DashboardController < Admin::BaseController
     @completed_bookings = Booking.completed.count
 
     # Recent bookings
-    @recent_bookings = Booking.includes(:user, :store).order(created_at: :desc).limit(5)
+    @recent_bookings = Booking.includes(:user, :store).order(created_at: :desc).limit(::Constants::RECENT_BOOKINGS_LIMIT)
 
     # Popular stores (top 5 by booking count)
     @popular_stores = Store.select("stores.*, COUNT(bookings.id) as bookings_count")
                           .joins(:bookings)
                           .group("stores.id")
                           .order("bookings_count DESC")
-                          .limit(5)
+                          .limit(::Constants::TOP_STORES_LIMIT)
   end
 end

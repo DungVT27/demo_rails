@@ -6,7 +6,7 @@ class Admin::BaseController < ApplicationController
 
   def verify_admin!
     unless current_user&.admin?
-      redirect_to root_path, alert: I18n.t("app_messages.access_denied")
+      redirect_to root_path, alert: I18n.t("messages.access_denied")
     end
   end
 end

@@ -56,13 +56,13 @@ class Booking < ApplicationRecord
     return unless booking_date.present?
 
     if booking_date < Date.current
-      errors.add(:booking_date, I18n.t("app_messages.models.booking.date_in_past"))
+      errors.add(:booking_date, I18n.t("messages.models.booking.date_in_past"))
     elsif booking_date == Date.current && booking_time.present?
       # Combine booking_date and booking_time into a full Time object in application time zone
       booking_datetime = Time.zone.parse("#{booking_date} #{booking_time.strftime('%H:%M:%S')}")
       # Allow a tiny 5-minute buffer for form submission/click latency
       if booking_datetime < Time.current - 5.minutes
-        errors.add(:booking_time, I18n.t("app_messages.models.booking.time_in_past"))
+        errors.add(:booking_time, I18n.t("messages.models.booking.time_in_past"))
       end
     end
   end
@@ -76,7 +76,7 @@ class Booking < ApplicationRecord
     close_str = store.closing_time.strftime("%H:%M")
 
     if booking_str < open_str || booking_str > close_str
-      errors.add(:booking_time, I18n.t("app_messages.models.booking.operating_hours", open: open_str, close: close_str))
+      errors.add(:booking_time, I18n.t("messages.models.booking.operating_hours", open: open_str, close: close_str))
     end
   end
 
@@ -99,7 +99,7 @@ class Booking < ApplicationRecord
     end
 
     if has_conflict
-      errors.add(:booking_time, I18n.t("app_messages.models.booking.duplicate_slot"))
+      errors.add(:booking_time, I18n.t("messages.models.booking.duplicate_slot"))
     end
   end
 
@@ -107,7 +107,7 @@ class Booking < ApplicationRecord
     return unless store.present?
 
     if store.inactive?
-      errors.add(:store, I18n.t("app_messages.models.booking.inactive_store"))
+      errors.add(:store, I18n.t("messages.models.booking.inactive_store"))
     end
   end
 end

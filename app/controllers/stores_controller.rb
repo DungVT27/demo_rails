@@ -6,7 +6,7 @@ class StoresController < ApplicationController
   def index
     # Search and filter active stores using Ransack
     @q = Store.active.ransack(params[:q])
-    @stores = @q.result(distinct: true).order(name: :desc).page(params[:page]).per(::AppConstants::STORES_PER_PAGE_PUBLIC)
+    @stores = @q.result(distinct: true).order(name: :desc).page(params[:page]).per(::Constants::STORES_PER_PAGE_PUBLIC)
   end
 
   def show

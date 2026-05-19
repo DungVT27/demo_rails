@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.json { render json: { error: "Access Denied: #{exception.message}" }, status: :forbidden }
-      format.html { redirect_to main_app.root_path, alert: I18n.t("app_messages.unauthorized") }
+      format.html { redirect_to main_app.root_path, alert: I18n.t("messages.unauthorized") }
     end
   end
 

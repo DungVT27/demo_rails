@@ -9,7 +9,7 @@ class Admin::BookingsController < Admin::BaseController
                   .order(booking_date: :desc, booking_time: :desc)
 
     respond_to do |format|
-      format.html { @bookings = @bookings.page(params[:page]).per(5) }
+      format.html { @bookings = @bookings.page(params[:page]).per(::Constants::BOOKINGS_PER_PAGE) }
       format.csv { send_data generate_csv(@bookings), filename: "bookings-#{Date.today}.csv" }
     end
   end
@@ -23,9 +23,9 @@ class Admin::BookingsController < Admin::BaseController
     result = service.call
 
     if result.success?
-      redirect_to admin_bookings_path, success: I18n.t("app_messages.admin.bookings.cancel_success", id: @booking.id, user_name: @booking.user.name)
+      redirect_to admin_bookings_path, success: I18n.t("messages.admin.bookings.cancel_success", id: @booking.id, user_name: @booking.user.name)
     else
-      redirect_to admin_booking_path(@booking), alert: I18n.t("app_messages.admin.bookings.cancel_error", errors: result.errors.join(', '))
+      redirect_to admin_booking_path(@booking), alert: I18n.t("messages.admin.bookings.cancel_error", errors: result.errors.join(', '))
     end
   end
 
@@ -35,9 +35,9 @@ class Admin::BookingsController < Admin::BaseController
     result = service.call
 
     if result.success?
-      redirect_to admin_bookings_path, success: I18n.t("app_messages.admin.bookings.complete_success", id: @booking.id)
+      redirect_to admin_bookings_path, success: I18n.t("messages.admin.bookings.complete_success", id: @booking.id)
     else
-      redirect_to admin_booking_path(@booking), alert: I18n.t("app_messages.admin.bookings.complete_error", errors: result.errors.join(', '))
+      redirect_to admin_booking_path(@booking), alert: I18n.t("messages.admin.bookings.complete_error", errors: result.errors.join(', '))
     end
   end
 
