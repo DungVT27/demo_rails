@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 
   # Public / User Interfaces
   root "stores#index"
-  resources :stores, only: [:index, :show]
-  resources :bookings, only: [:index, :create] do
+  resources :stores, only: [ :index, :show ]
+  resources :bookings, only: [ :index, :create ] do
     member do
       patch :cancel
     end
@@ -18,12 +18,12 @@ Rails.application.routes.draw do
   namespace :admin do
     get "/" => "dashboard#index", as: :dashboard
     resources :stores
-    resources :users, only: [:index, :show, :destroy] do
+    resources :users, only: [ :index, :show, :destroy ] do
       collection do
         delete :bulk_destroy
       end
     end
-    resources :bookings, only: [:index, :show] do
+    resources :bookings, only: [ :index, :show ] do
       member do
         patch :cancel
         patch :complete
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
 
   # RESTful JSON API
   namespace :api, defaults: { format: :json } do
-    resources :stores, only: [:index, :show]
-    resources :bookings, only: [:index, :create, :update]
+    resources :stores, only: [ :index, :show ]
+    resources :bookings, only: [ :index, :create, :update ]
   end
 end

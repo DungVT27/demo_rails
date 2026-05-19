@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::BaseController
-  before_action :set_user, only: [:show, :destroy]
+  before_action :set_user, only: [ :show, :destroy ]
 
   def index
     # Exclude admins or allow listing all users, but filter by Ransack

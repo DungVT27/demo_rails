@@ -5,8 +5,8 @@ class Api::BookingsController < Api::BaseController
     # Returns the authenticated client's bookings including store info
     bookings = current_user.bookings.includes(:store).order(booking_date: :desc, booking_time: :desc)
     render json: bookings.as_json(
-      include: { store: { only: [:id, :name, :address, :booking_fee] } },
-      only: [:id, :booking_date, :booking_time, :status, :created_at]
+      include: { store: { only: [ :id, :name, :address, :booking_fee ] } },
+      only: [ :id, :booking_date, :booking_time, :status, :created_at ]
     ), status: :ok
   end
 
@@ -16,8 +16,8 @@ class Api::BookingsController < Api::BaseController
 
     if result.success?
       render json: result.record.as_json(
-        include: { store: { only: [:id, :name, :address, :booking_fee] } },
-        only: [:id, :booking_date, :booking_time, :status, :created_at]
+        include: { store: { only: [ :id, :name, :address, :booking_fee ] } },
+        only: [ :id, :booking_date, :booking_time, :status, :created_at ]
       ), status: :created
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
@@ -46,8 +46,8 @@ class Api::BookingsController < Api::BaseController
 
     if result.success?
       render json: result.record.as_json(
-        include: { store: { only: [:id, :name, :address, :booking_fee] } },
-        only: [:id, :booking_date, :booking_time, :status, :updated_at]
+        include: { store: { only: [ :id, :name, :address, :booking_fee ] } },
+        only: [ :id, :booking_date, :booking_time, :status, :updated_at ]
       ), status: :ok
     else
       render json: { errors: result.errors }, status: :unprocessable_entity

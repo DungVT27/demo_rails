@@ -3,9 +3,9 @@ class Admin::DashboardController < Admin::BaseController
     @total_stores = Store.count
     @total_users = User.user.count
     @total_bookings = Booking.count
-    
+
     # Calculate estimated revenue based on approved or completed bookings
-    @total_revenue = Booking.where(status: [:approved, :completed]).joins(:store).sum("stores.booking_fee")
+    @total_revenue = Booking.where(status: [ :approved, :completed ]).joins(:store).sum("stores.booking_fee")
 
     # Booking status breakdown
     @approved_bookings = Booking.approved.count

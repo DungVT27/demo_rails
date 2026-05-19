@@ -22,7 +22,7 @@ class BookingsController < ApplicationController
       # If create fails, reload the store show view with errors
       @store = Store.find(booking_params[:store_id])
       @booking = result.record
-      flash.now[:alert] = I18n.t("messages.public.bookings.create_error", errors: result.errors.join(', '))
+      flash.now[:alert] = I18n.t("messages.public.bookings.create_error", errors: result.errors.join(", "))
       render "stores/show", status: :unprocessable_entity
     end
   end
@@ -35,7 +35,7 @@ class BookingsController < ApplicationController
     if result.success?
       redirect_to bookings_path, success: I18n.t("messages.public.bookings.cancel_success")
     else
-      redirect_to bookings_path, alert: I18n.t("messages.public.bookings.cancel_error", errors: result.errors.join(', '))
+      redirect_to bookings_path, alert: I18n.t("messages.public.bookings.cancel_error", errors: result.errors.join(", "))
     end
   end
 

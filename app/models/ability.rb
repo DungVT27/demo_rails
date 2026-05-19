@@ -13,7 +13,7 @@ class Ability
     else
       # Regular User Permissions
       can :read, Store, status: "active"
-      
+
       # Bookings: users can only view, create, or cancel their own bookings
       can :read, Booking, user_id: user.id
       can :create, Booking

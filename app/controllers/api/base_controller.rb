@@ -16,7 +16,7 @@ class Api::BaseController < ActionController::API
   # Authenticater for API requests
   def authenticate_api_user!
     # Check X-User-Email header
-    email = request.headers['X-User-Email']
+    email = request.headers["X-User-Email"]
     @current_api_user = User.find_by(email: email) if email.present?
 
     # Fallback to user_id parameter for convenient curl testing
@@ -25,8 +25,8 @@ class Api::BaseController < ActionController::API
     end
 
     if @current_api_user.blank?
-      render json: { 
-        error: "Unauthorized access. Please supply a valid client email header 'X-User-Email' or 'user_id' query parameter." 
+      render json: {
+        error: "Unauthorized access. Please supply a valid client email header 'X-User-Email' or 'user_id' query parameter."
       }, status: :unauthorized
     end
   end

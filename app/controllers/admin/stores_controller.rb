@@ -1,5 +1,5 @@
 class Admin::StoresController < Admin::BaseController
-  before_action :set_store, only: [:show, :edit, :update, :destroy]
+  before_action :set_store, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @q = Store.ransack(params[:q])

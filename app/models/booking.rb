@@ -87,7 +87,7 @@ class Booking < ApplicationRecord
     conflicting_bookings = Booking.where(
       store_id: store_id,
       booking_date: booking_date,
-      status: [:approved, :completed]
+      status: [ :approved, :completed ]
     )
 
     # Exclude the current booking when updating

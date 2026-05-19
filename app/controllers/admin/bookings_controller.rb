@@ -1,5 +1,5 @@
 class Admin::BookingsController < Admin::BaseController
-  before_action :set_booking, only: [:show, :cancel, :complete]
+  before_action :set_booking, only: [ :show, :cancel, :complete ]
 
   def index
     # Search and filter bookings using Ransack (by date, store, user, status)
@@ -25,7 +25,7 @@ class Admin::BookingsController < Admin::BaseController
     if result.success?
       redirect_to admin_bookings_path, success: I18n.t("messages.admin.bookings.cancel_success", id: @booking.id, user_name: @booking.user.name)
     else
-      redirect_to admin_booking_path(@booking), alert: I18n.t("messages.admin.bookings.cancel_error", errors: result.errors.join(', '))
+      redirect_to admin_booking_path(@booking), alert: I18n.t("messages.admin.bookings.cancel_error", errors: result.errors.join(", "))
     end
   end
 
@@ -37,7 +37,7 @@ class Admin::BookingsController < Admin::BaseController
     if result.success?
       redirect_to admin_bookings_path, success: I18n.t("messages.admin.bookings.complete_success", id: @booking.id)
     else
-      redirect_to admin_booking_path(@booking), alert: I18n.t("messages.admin.bookings.complete_error", errors: result.errors.join(', '))
+      redirect_to admin_booking_path(@booking), alert: I18n.t("messages.admin.bookings.complete_error", errors: result.errors.join(", "))
     end
   end
 
@@ -50,7 +50,7 @@ class Admin::BookingsController < Admin::BaseController
   def generate_csv(bookings)
     require "csv"
     CSV.generate(headers: true) do |csv|
-      csv << ["Booking ID", "User Name", "User Email", "Store Name", "Date", "Time", "Booking Fee", "Status", "Created At"]
+      csv << [ "Booking ID", "User Name", "User Email", "Store Name", "Date", "Time", "Booking Fee", "Status", "Created At" ]
       bookings.each do |booking|
         csv << [
           booking.id,

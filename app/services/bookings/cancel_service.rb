@@ -17,7 +17,7 @@ module Bookings
         )
 
         if Time.current > (booking_datetime - 1.day)
-          return ServiceResult.new(false, @booking, ["You can only cancel your booking at least 1 day before the scheduled booking time."])
+          return ServiceResult.new(false, @booking, [ "You can only cancel your booking at least 1 day before the scheduled booking time." ])
         end
       end
 

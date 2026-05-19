@@ -1,6 +1,6 @@
 class StoresController < ApplicationController
   # Allow viewing stores without logging in
-  before_action :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!, except: [ :index, :show ]
   before_action :redirect_admin_to_dashboard
 
   def index
