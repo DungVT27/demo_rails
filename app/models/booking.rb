@@ -24,22 +24,9 @@ class Booking < ApplicationRecord
 
   # Auto-completes approved bookings whose time slot has passed
   def self.auto_complete_passed!
-    completed_count = 0
-
-    # Update bookings with a date strictly in the past
-    completed_count += approved.where("booking_date < ?", Date.current).update_all(status: :completed)
-
-    # Update bookings for today whose time slot has passed
-    today_bookings = approved.where(booking_date: Date.current)
-    today_bookings.each do |booking|
-      booking_datetime = Time.zone.parse("#{booking.booking_date} #{booking.booking_time.strftime('%H:%M:%S')}")
-      if booking_datetime < Time.current
-        booking.update_columns(status: :completed)
-        completed_count += 1
-      end
-    end
-
-    completed_count
+    approved
+      .where("TIMESTAMP(booking_date, booking_time) < ?", Time.current)
+      .update_all(status: :completed, updated_at: Time.current)
   end
 
   # Ransack configuration for searching bookings in admin views
