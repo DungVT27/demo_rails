@@ -1,5 +1,5 @@
 en:
-  app_messages:
+  messages:
     unauthorized: "You are not authorized to access this page."
     access_denied: "Access Denied: You do not have permissions to access the Administration area."
     admin:
