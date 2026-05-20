@@ -10,15 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_18_025417) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_20_030315) do
   create_table "bookings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "booking_date", null: false
     t.time "booking_time", null: false
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.integer "status", default: 0, null: false
     t.bigint "store_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["deleted_at"], name: "index_bookings_on_deleted_at"
     t.index ["store_id"], name: "index_bookings_on_store_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
@@ -28,15 +30,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_18_025417) do
     t.decimal "booking_fee", precision: 8, scale: 2, default: "0.0", null: false
     t.time "closing_time", null: false
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.text "description"
     t.string "name", null: false
     t.time "opening_time", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_stores_on_deleted_at"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", null: false
@@ -45,6 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_18_025417) do
     t.string "reset_password_token"
     t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

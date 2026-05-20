@@ -1,4 +1,5 @@
 class Booking < ApplicationRecord
+  acts_as_paranoid
   # Associations
   belongs_to :user
   belongs_to :store

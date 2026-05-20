@@ -1,4 +1,5 @@
 class Store < ApplicationRecord
+  acts_as_paranoid
   # Associations
   has_many :bookings, dependent: :restrict_with_error
 
