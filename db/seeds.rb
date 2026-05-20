@@ -1,8 +1,8 @@
 # Clear existing data in correct dependency order
 puts "Clearing existing data..."
-Booking.destroy_all
-Store.destroy_all
-User.destroy_all
+Booking.with_deleted.delete_all!
+Store.with_deleted.delete_all!
+User.with_deleted.delete_all!
 
 puts "Creating Admin Account..."
 admin = User.create!(
